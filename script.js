@@ -11,7 +11,7 @@ const gameBoard = (() => {
         [0, 0, 0]
     ];
 
-    const displayBoard = (p1Piece, p2Piece) => {
+    const updateBoard = (p1Piece, p2Piece) => {
         let i = 0;
         let currentPiece = 0;
 
@@ -29,7 +29,11 @@ const gameBoard = (() => {
         _playerTwoScore.textContent = p2Score;
     };
 
-    return {displayBoard, updateScore};
+    const move = (player, positionRow, positionColumn) => {
+        _currentBoard[positionRow][positionColumn] = player;
+    }
+
+    return {updateBoard, updateScore, move};
 })();
 
 const Player = (name, gamePiece) => {
@@ -38,8 +42,18 @@ const Player = (name, gamePiece) => {
     return {score, name, gamePiece};
 };
 
-const nemina = Player("Nemina", "X");
-const devina = Player("Devina", "O");
+const t3Game = (() => {
+    const run = () => {
+        const nemina = Player("Nemina", "X");
+        const devina = Player("Devina", "O");
 
-gameBoard.updateScore(nemina.name, nemina.score, devina.name, devina.score);
-gameBoard.displayBoard(nemina.gamePiece, devina.gamePiece);
+        gameBoard.move(1, 1, 1);
+        gameBoard.move(2, 2, 2);
+        gameBoard.updateScore(nemina.name, nemina.score, devina.name, devina.score);
+        gameBoard.updateBoard(nemina.gamePiece, devina.gamePiece);
+    }
+    
+    return {run};
+})();
+
+t3Game.run();
