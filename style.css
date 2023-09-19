@@ -34,9 +34,6 @@ body {
     margin: 0 auto;
     display: grid;
     grid-template: 75px 75px 75px / 75px 75px 75px;
-    grid-template-areas:    "square-a square-b square-c"
-                            "square-d square-e square-f"
-                            "square-g square-h square-i";
     border: 3px solid black;
     background-color: black;
     gap: 3px;
