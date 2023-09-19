@@ -1,6 +1,10 @@
-const gameSquares = document.querySelectorAll(".game-square");
-
 const gameBoard = (() => {
+    const _gameSquares = document.querySelectorAll(".game-square");
+    const _playerOneName = document.getElementById("player-one-name");
+    const _playerOneScore = document.getElementById("player-one-score");
+    const _playerTwoName = document.getElementById("player-two-name");
+    const _playerTwoScore = document.getElementById("player-two-score");
+
     const _currentBoard = [
         [0, 0, 0],
         [0, 0, 0],
@@ -11,13 +15,21 @@ const gameBoard = (() => {
         let i = 0;
         let currentPiece = 0;
 
-        [...gameSquares].forEach((square) => {
+        [..._gameSquares].forEach((square) => {
             currentPiece = _currentBoard[Math.floor(i / 3)][i % 3];
             square.textContent = currentPiece===1 ? p1Piece : currentPiece===2 ? p2Piece : "";
             i++;
         });
-    }
-    return {displayBoard};
+    };
+
+    const updateScore = (p1Name, p1Score, p2Name, p2Score) => {
+        _playerOneName.textContent = p1Name;
+        _playerOneScore.textContent = p1Score;
+        _playerTwoName.textContent = p2Name;
+        _playerTwoScore.textContent = p2Score;
+    };
+
+    return {displayBoard, updateScore};
 })();
 
 const Player = (name, gamePiece) => {
@@ -29,4 +41,5 @@ const Player = (name, gamePiece) => {
 const nemina = Player("Nemina", "X");
 const devina = Player("Devina", "O");
 
+gameBoard.updateScore(nemina.name, nemina.score, devina.name, devina.score);
 gameBoard.displayBoard(nemina.gamePiece, devina.gamePiece);
