@@ -9,16 +9,18 @@ const gameBoard = (() => {
     // values of the array represent who occupies the space
     // 0 = empty, 1 = player one, 2 = player two
 
-    const currentBoard = [
+    let currentBoard = [
         [0, 0, 0],
         [0, 0, 0],
         [0, 0, 0]
     ];
 
     const resetBoard = () => {
-        [...currentBoard].forEach((row) => {
-            currentBoard[row] = [0, 0, 0];
-        });
+        currentBoard = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
     };
 
     const updateBoard = (p1Piece, p2Piece) => {
@@ -48,7 +50,7 @@ const gameBoard = (() => {
             _playerOneName.classList.add("my-turn-now");
             _playerTwoName.classList.remove("my-turn-now");
         }
-        else if (whoseTurn ===2) {
+        else if (whoseTurn === 2) {
             _playerTwoName.classList.add("my-turn-now");
             _playerOneName.classList.remove("my-turn-now");
         }
@@ -112,6 +114,7 @@ const Player = (name, gamePiece) => {
 };
 
 const t3Game = (() => {
+    const _newGameButton = document.getElementById("new-game-button");
     const _nemina = Player("", "");
     const _devina = Player("", "");
     let _currentPlayerTurn = 0;
@@ -157,6 +160,12 @@ const t3Game = (() => {
         });
     });
 
+    _newGameButton.addEventListener("click", () => {
+        initializeGame();
+    });
+
+    // set methods here
+
     const initializeGame = () => {
         _nemina.name = "Nemina";
         _nemina.gamePiece = "X";
@@ -164,6 +173,8 @@ const t3Game = (() => {
         _devina.gamePiece = "O";
         _gameIsActive = true;
         _currentPlayerTurn = 1;
+        gameBoard.resetBoard();
+        gameBoard.updateBoard(_nemina.gamePiece, _devina.gamePiece);
         gameBoard.indicateTurn(_currentPlayerTurn);
         gameBoard.updateScore(_nemina.name, _nemina.score, _devina.name, _devina.score);
     };
@@ -197,19 +208,19 @@ const t3Game = (() => {
                 _gameIsActive = false;
                 gameBoard.indicateTurn(0);
                 gameBoard.updateScore(_nemina.name, _nemina.score, _devina.name, _devina.score);
-                break;
+                return;
             case 2:
                 console.log("player 2 is the winner");
                 _devina.score++;
                 _gameIsActive = false;
                 gameBoard.indicateTurn(0);
                 gameBoard.updateScore(_nemina.name, _nemina.score, _devina.name, _devina.score);
-                break;
+                return;
             case 3:
                 console.log("wow it was a tie!");
                 _gameIsActive = false;
                 gameBoard.indicateTurn(0);
-                break;
+                return;
         }
         // else change currentPlayerTurn and change player name containers class
 
@@ -218,5 +229,3 @@ const t3Game = (() => {
     }
     return {initializeGame, tryMove};
 })();
-
-t3Game.initializeGame();
