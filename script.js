@@ -17,7 +17,7 @@ const gameBoard = (() => {
 
     const resetBoard = () => {
         [...currentBoard].forEach((row) => {
-            currentBoard[row] = [0, 0, 0,];
+            currentBoard[row] = [0, 0, 0];
         });
     };
 
@@ -43,7 +43,50 @@ const gameBoard = (() => {
         currentBoard[positionRow][positionColumn] = player;
     };
 
-    return {updateBoard, updateScore, placePiece, resetBoard, currentBoard};
+    const getWinState = () => {
+        if (currentBoard[0][0] !== 0) {
+            if (currentBoard[0][0] === currentBoard[0][1] && currentBoard[0][1] === currentBoard[0][2]) {
+                return currentBoard[0][0];
+            }
+            if (currentBoard[0][0] === currentBoard[1][0] && currentBoard[1][0] === currentBoard[2][0]) {
+                return currentBoard[0][0];
+            }
+            if (currentBoard[0][0] === currentBoard[1][1] && currentBoard[1][1] === currentBoard[2][2]) {
+                return currentBoard[0][0];
+            }   
+        }
+        if (currentBoard[0][1] !== 0) {
+            if (currentBoard[0][1] === currentBoard[1][1] && currentBoard[1][1] === currentBoard[2][1]) {
+                return currentBoard[0][1];
+            }
+        }
+        if (currentBoard[0][2] !== 0) {
+            if (currentBoard[0][2] === currentBoard[1][2] && currentBoard[1][2] === currentBoard[2][2]) {
+                return currentBoard[0][2];
+            }
+            if (currentBoard[0][2] === currentBoard[1][1] && currentBoard[1][1] === currentBoard[2][0]) {
+                return currentBoard[0][2];
+            }
+        }
+        if (currentBoard[1][0] !== 0) {
+            if (currentBoard[1][0] === currentBoard[1][1] && currentBoard[1][1] === currentBoard[1][2]) {
+                return currentBoard[1][0];
+            }
+        }
+        if (currentBoard[2][0] !== 0) {
+            if (currentBoard[2][0] === currentBoard[2][1] && currentBoard[2][1] === currentBoard[2][2]) {
+                return currentBoard[2][0];
+            }
+        }
+
+        if (!currentBoard.flat().includes(0)) {
+            return 3;
+        }
+
+        return 0;
+    };
+
+    return {updateBoard, updateScore, placePiece, resetBoard, getWinState, currentBoard};
 })();
 
 const Player = (name, gamePiece) => {
@@ -69,6 +112,10 @@ const t3Game = (() => {
             
             let row = undefined;
             let column = undefined;
+
+            // rows and columns are named by Chess convention on page
+            // this finds the class labels and converts them to array indices
+            // board is stored in array with row 0 on top and col 2 on right
 
             if (square.classList.contains("row-three")) {
                 row = 0;
@@ -123,7 +170,27 @@ const t3Game = (() => {
         // examine current board for a win or tie
         // if a win, increment score for winning player, display message, gameIsActive = false
         // if a tie, display tie message
-
+        switch (gameBoard.getWinState()) {
+            case 0:
+                console.log("game is not finished, keep going");
+                break;
+            case 1:
+                console.log("player 1 is the winner");
+                _nemina.score++;
+                _gameIsActive = false;
+                gameBoard.updateScore(_nemina.name, _nemina.score, _devina.name, _devina.score);
+                break;
+            case 2:
+                console.log("player 2 is the winner");
+                _devina.score++;
+                _gameIsActive = false;
+                gameBoard.updateScore(_nemina.name, _nemina.score, _devina.name, _devina.score);
+                break;
+            case 3:
+                console.log("wow it was a tie!");
+                _gameIsActive = false;
+                break;
+        }
         // else change currentPlayerTurn and change player name containers class
         _currentPlayerTurn = (_currentPlayerTurn === 1) ? 2 : 1;
 
