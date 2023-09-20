@@ -45,3 +45,7 @@ body {
     background-color: rgb(141, 29, 29);
     color: rgb(247, 190, 167)
 }
+
+.my-turn-now {
+    border-bottom: 2px solid brown;
+}

@@ -43,6 +43,21 @@ const gameBoard = (() => {
         currentBoard[positionRow][positionColumn] = player;
     };
 
+    const indicateTurn = (whoseTurn) => {
+        if (whoseTurn === 1) {
+            _playerOneName.classList.add("my-turn-now");
+            _playerTwoName.classList.remove("my-turn-now");
+        }
+        else if (whoseTurn ===2) {
+            _playerTwoName.classList.add("my-turn-now");
+            _playerOneName.classList.remove("my-turn-now");
+        }
+        else {
+            _playerOneName.classList.remove("my-turn-now");
+            _playerTwoName.classList.remove("my-turn-now");
+        }
+    };
+
     const getWinState = () => {
         if (currentBoard[0][0] !== 0) {
             if (currentBoard[0][0] === currentBoard[0][1] && currentBoard[0][1] === currentBoard[0][2]) {
@@ -86,7 +101,8 @@ const gameBoard = (() => {
         return 0;
     };
 
-    return {updateBoard, updateScore, placePiece, resetBoard, getWinState, currentBoard};
+    return {updateBoard, updateScore, placePiece, resetBoard, getWinState,
+            indicateTurn, currentBoard};
 })();
 
 const Player = (name, gamePiece) => {
@@ -148,6 +164,7 @@ const t3Game = (() => {
         _devina.gamePiece = "O";
         _gameIsActive = true;
         _currentPlayerTurn = 1;
+        gameBoard.indicateTurn(_currentPlayerTurn);
         gameBoard.updateScore(_nemina.name, _nemina.score, _devina.name, _devina.score);
     };
     
@@ -178,22 +195,26 @@ const t3Game = (() => {
                 console.log("player 1 is the winner");
                 _nemina.score++;
                 _gameIsActive = false;
+                gameBoard.indicateTurn(0);
                 gameBoard.updateScore(_nemina.name, _nemina.score, _devina.name, _devina.score);
                 break;
             case 2:
                 console.log("player 2 is the winner");
                 _devina.score++;
                 _gameIsActive = false;
+                gameBoard.indicateTurn(0);
                 gameBoard.updateScore(_nemina.name, _nemina.score, _devina.name, _devina.score);
                 break;
             case 3:
                 console.log("wow it was a tie!");
                 _gameIsActive = false;
+                gameBoard.indicateTurn(0);
                 break;
         }
         // else change currentPlayerTurn and change player name containers class
-        _currentPlayerTurn = (_currentPlayerTurn === 1) ? 2 : 1;
 
+        _currentPlayerTurn = (_currentPlayerTurn === 1) ? 2 : 1;
+        gameBoard.indicateTurn(_currentPlayerTurn);
     }
     return {initializeGame, tryMove};
 })();
