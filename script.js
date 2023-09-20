@@ -117,6 +117,10 @@ const t3Game = (() => {
     const _newGameButton = document.getElementById("new-game-button");
     const _nemina = Player("", "");
     const _devina = Player("", "");
+    const _newGameDialog = document.getElementById("new-game-dialog");
+    const _dialogP1 = document.getElementById("p1");
+    const _dialogP2 = document.getElementById("p2");
+    const _dialogConfirmBtn = document.getElementById("confirm-btn");
     let _currentPlayerTurn = 0;
     let _gameIsActive = false;
 
@@ -161,15 +165,23 @@ const t3Game = (() => {
     });
 
     _newGameButton.addEventListener("click", () => {
+        _dialogP1.value = "";
+        _dialogP2.value = "";
+        _newGameDialog.showModal();
+    });
+
+    _dialogConfirmBtn.addEventListener("click", (event) => {
+        event.preventDefault();
         initializeGame();
+        _newGameDialog.close();
     });
 
     // set methods here
 
-    const initializeGame = () => {
-        _nemina.name = "Nemina";
+    const initializeGame = () => { 
+        _nemina.name = _dialogP1.value;
         _nemina.gamePiece = "X";
-        _devina.name = "Devina";
+        _devina.name = _dialogP2.value;
         _devina.gamePiece = "O";
         _gameIsActive = true;
         _currentPlayerTurn = 1;

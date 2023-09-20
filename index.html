@@ -31,5 +31,25 @@
             <div id="player-two-score"></div>
         </div>
     </div>
+    <dialog id="new-game-dialog">
+        <form>
+            <p>
+                <label>
+                    Player 1:
+                    <input type="text" id="p1"/>
+                </label>
+            </p>
+            <p>
+                <label>
+                    Player 2:
+                    <input type="text" id="p2"/>
+                </label>
+            </p>
+            <div>
+                <button value="cancel" formmethod="dialog">Cancel</button>
+                <button id="confirm-btn" value="default">Confirm</button>
+            </div>
+        </form>
+    </dialog>
 </body>
 </html>
