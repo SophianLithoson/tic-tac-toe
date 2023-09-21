@@ -9,18 +9,16 @@ const gameBoard = (() => {
     // values of the array represent who occupies the space
     // 0 = empty, 1 = player one, 2 = player two
 
-    let currentBoard = [
+    const currentBoard = [
         [0, 0, 0],
         [0, 0, 0],
         [0, 0, 0]
     ];
 
     const resetBoard = () => {
-        currentBoard = [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 0, 0]
-        ];
+        currentBoard[0] = [0, 0, 0];
+        currentBoard[1] = [0, 0, 0];
+        currentBoard[2] = [0, 0, 0];
     };
 
     const updateBoard = (p1Piece, p2Piece) => {
