@@ -58,43 +58,43 @@ const gameBoard = (() => {
         }
     };
 
-    const getWinState = () => {
-        if (currentBoard[0][0] !== 0) {
-            if (currentBoard[0][0] === currentBoard[0][1] && currentBoard[0][1] === currentBoard[0][2]) {
-                return currentBoard[0][0];
+    const getWinState = (board) => {
+        if (board[0][0] !== 0) {
+            if (board[0][0] === board[0][1] && board[0][1] === board[0][2]) {
+                return board[0][0];
             }
-            if (currentBoard[0][0] === currentBoard[1][0] && currentBoard[1][0] === currentBoard[2][0]) {
-                return currentBoard[0][0];
+            if (board[0][0] === board[1][0] && board[1][0] === board[2][0]) {
+                return board[0][0];
             }
-            if (currentBoard[0][0] === currentBoard[1][1] && currentBoard[1][1] === currentBoard[2][2]) {
-                return currentBoard[0][0];
+            if (board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
+                return board[0][0];
             }   
         }
-        if (currentBoard[0][1] !== 0) {
-            if (currentBoard[0][1] === currentBoard[1][1] && currentBoard[1][1] === currentBoard[2][1]) {
-                return currentBoard[0][1];
+        if (board[0][1] !== 0) {
+            if (board[0][1] === board[1][1] && board[1][1] === board[2][1]) {
+                return board[0][1];
             }
         }
-        if (currentBoard[0][2] !== 0) {
-            if (currentBoard[0][2] === currentBoard[1][2] && currentBoard[1][2] === currentBoard[2][2]) {
-                return currentBoard[0][2];
+        if (board[0][2] !== 0) {
+            if (board[0][2] === board[1][2] && board[1][2] === board[2][2]) {
+                return board[0][2];
             }
-            if (currentBoard[0][2] === currentBoard[1][1] && currentBoard[1][1] === currentBoard[2][0]) {
-                return currentBoard[0][2];
-            }
-        }
-        if (currentBoard[1][0] !== 0) {
-            if (currentBoard[1][0] === currentBoard[1][1] && currentBoard[1][1] === currentBoard[1][2]) {
-                return currentBoard[1][0];
+            if (board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
+                return board[0][2];
             }
         }
-        if (currentBoard[2][0] !== 0) {
-            if (currentBoard[2][0] === currentBoard[2][1] && currentBoard[2][1] === currentBoard[2][2]) {
-                return currentBoard[2][0];
+        if (board[1][0] !== 0) {
+            if (board[1][0] === board[1][1] && board[1][1] === board[1][2]) {
+                return board[1][0];
+            }
+        }
+        if (board[2][0] !== 0) {
+            if (board[2][0] === board[2][1] && board[2][1] === board[2][2]) {
+                return board[2][0];
             }
         }
 
-        if (!currentBoard.flat().includes(0)) {
+        if (!board.flat().includes(0)) {
             return 3;
         }
 
@@ -208,7 +208,7 @@ const t3Game = (() => {
         // examine current board for a win or tie
         // if a win, increment score for winning player, display message, gameIsActive = false
         // if a tie, display tie message
-        switch (gameBoard.getWinState()) {
+        switch (gameBoard.getWinState(gameBoard.currentBoard)) {
             case 0:
                 console.log("game is not finished, keep going");
                 break;
