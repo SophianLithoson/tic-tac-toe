@@ -22,13 +22,13 @@ const gameBoard = (() => {
     };
 
     const updateBoard = (p1Piece, p2Piece) => {
-        let i = 0;
+        let _i = 0;
         let currentPiece = 0;
 
         [...gameSquares].forEach((square) => {
-            currentPiece = currentBoard[Math.floor(i / 3)][i % 3];
+            currentPiece = currentBoard[Math.floor(_i / 3)][_i % 3];
             square.textContent = currentPiece===1 ? p1Piece : currentPiece===2 ? p2Piece : "";
-            i++;
+            _i++;
         });
     };
 
@@ -101,8 +101,23 @@ const gameBoard = (() => {
         return 0;
     };
 
+    const bestNextMove = (passedBoard, isAITurn) => {
+        const validMoves = [];
+        const testBoard = passedBoard.flat();
+
+        for (let i=0; i < testBoard.length; i++) {
+            if (testBoard[i] === 0) {
+                validMoves.push(i);
+            }
+
+        }
+
+        let moveToMake = validMoves[Math.floor(Math.random() * validMoves.length)];
+        return {row: (Math.floor(moveToMake / 3)), column: (moveToMake % 3)};
+    };
+
     return {updateBoard, updateScore, placePiece, resetBoard, getWinState,
-            indicateTurn, currentBoard};
+            indicateTurn, bestNextMove, currentBoard};
 })();
 
 const Player = (name, gamePiece) => {
@@ -121,6 +136,7 @@ const t3Game = (() => {
     const _dialogConfirmBtn = document.getElementById("confirm-btn");
     let _currentPlayerTurn = 0;
     let _gameIsActive = false;
+    let _aiGame = true;
 
     // set click listeners
 
@@ -236,6 +252,11 @@ const t3Game = (() => {
 
         _currentPlayerTurn = (_currentPlayerTurn === 1) ? 2 : 1;
         gameBoard.indicateTurn(_currentPlayerTurn);
+
+        if (_currentPlayerTurn === 2 && _aiGame) {
+            let nextMove = gameBoard.bestNextMove(gameBoard.currentBoard, true);
+            tryMove(nextMove.row, nextMove.column);
+        }
     }
     return {initializeGame, tryMove};
 })();
