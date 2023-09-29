@@ -101,20 +101,27 @@ const gameBoard = (() => {
         return 0;
     };
 
-    const bestNextMove = (passedBoard, isAITurn) => {
+    const bestNextMove = (passedBoard, isAITurn, depth) => {    
+        let moveToMake = _minimax(passedBoard, isAITurn, depth);
+        return {row: (Math.floor(moveToMake / 3)), column: (moveToMake % 3)};
+    };
+
+    function _minimax(passedBoard, isAITurn, depth) {
         const validMoves = [];
         const testBoard = passedBoard.flat();
+
+/*        if (depth !== 0) {
+            passedBoard.getWinState
+        } */
 
         for (let i=0; i < testBoard.length; i++) {
             if (testBoard[i] === 0) {
                 validMoves.push(i);
             }
-
         }
 
-        let moveToMake = validMoves[Math.floor(Math.random() * validMoves.length)];
-        return {row: (Math.floor(moveToMake / 3)), column: (moveToMake % 3)};
-    };
+        return validMoves[Math.floor(Math.random() * validMoves.length)];
+    }
 
     return {updateBoard, updateScore, placePiece, resetBoard, getWinState,
             indicateTurn, bestNextMove, currentBoard};
