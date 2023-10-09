@@ -102,12 +102,12 @@ const gameBoard = (() => {
         return 0;
     };
 
-    const bestNextMove = (passedBoard) => {    
-        let moveToMake = _minimax(passedBoard, true, 0);
+    const bestNextMove = () => {    
+        let moveToMake = _minimax(currentBoard, true, 0);
         return {row: (Math.floor(moveToMake / 3)), column: (moveToMake % 3)};
     };
 
-    function _minimax(passedBoard, isAITurn, depth) {
+    function _minimax([...passedBoard], isAITurn, depth) {
         if (depth !== 0) {
             switch (getWinState(passedBoard)) {
                 case "X":
@@ -121,7 +121,7 @@ const gameBoard = (() => {
 
         const validMoves = [];
         const testBoard = passedBoard.flat();
-        let boardToPass = passedBoard;
+        let boardToPass = [[0, 0, 0][0, 0, 0][0, 0, 0]];
 
         for (let i=0; i < testBoard.length; i++) {
             if (testBoard[i] === 0) {
@@ -140,7 +140,9 @@ const gameBoard = (() => {
         }
 
         [...validMoves].forEach((moveIndex) => {
-            boardToPass = passedBoard;
+            boardToPass[0] = passedBoard[0].slice(0);
+            boardToPass[1] = passedBoard[1].slice(0);
+            boardToPass[2] = passedBoard[2].slice(0);
             boardToPass[Math.floor(moveIndex / 3)][moveIndex % 3] = (isAITurn) ? "O" : "X";
             testBoard[moveIndex] = _minimax(boardToPass, !isAITurn, depth + 1);
         });
@@ -313,7 +315,7 @@ const t3Game = (() => {
         gameBoard.indicateTurn(_currentPlayerTurn);
 
         if (_currentPlayerTurn === "O" && _aiGame) {
-            let nextMove = gameBoard.bestNextMove(gameBoard.currentBoard);
+            let nextMove = gameBoard.bestNextMove();
             tryMove(nextMove.row, nextMove.column);
         }
     }
