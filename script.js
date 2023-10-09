@@ -1,3 +1,4 @@
+const DEPTH_LIMIT = 10;
 const gameSquares = document.querySelectorAll(".game-square");
 
 const gameBoard = (() => {
@@ -7,7 +8,7 @@ const gameBoard = (() => {
     const _playerTwoScore = document.getElementById("player-two-score");
 
     // values of the array represent who occupies the space
-    // 0 = empty, 1 = player one, 2 = player two
+    // 0 = empty, X = player one, O = player two
 
     const currentBoard = [
         [0, 0, 0],
@@ -27,7 +28,7 @@ const gameBoard = (() => {
 
         [...gameSquares].forEach((square) => {
             currentPiece = currentBoard[Math.floor(_i / 3)][_i % 3];
-            square.textContent = currentPiece===1 ? p1Piece : currentPiece===2 ? p2Piece : "";
+            square.textContent = currentPiece==="X" ? p1Piece : currentPiece==="O" ? p2Piece : "";
             _i++;
         });
     };
@@ -44,11 +45,11 @@ const gameBoard = (() => {
     };
 
     const indicateTurn = (whoseTurn) => {
-        if (whoseTurn === 1) {
+        if (whoseTurn === "X") {
             _playerOneName.classList.add("my-turn-now");
             _playerTwoName.classList.remove("my-turn-now");
         }
-        else if (whoseTurn === 2) {
+        else if (whoseTurn === "O") {
             _playerTwoName.classList.add("my-turn-now");
             _playerOneName.classList.remove("my-turn-now");
         }
@@ -101,18 +102,26 @@ const gameBoard = (() => {
         return 0;
     };
 
-    const bestNextMove = (passedBoard, isAITurn, depth) => {    
-        let moveToMake = _minimax(passedBoard, isAITurn, depth);
+    const bestNextMove = (passedBoard) => {    
+        let moveToMake = _minimax(passedBoard, true, 0);
         return {row: (Math.floor(moveToMake / 3)), column: (moveToMake % 3)};
     };
 
     function _minimax(passedBoard, isAITurn, depth) {
+        if (depth !== 0) {
+            switch (getWinState(passedBoard)) {
+                case "X":
+                    return depth - 100;
+                case "O":
+                    return 100 - depth;
+                case 3:
+                    return depth - 50;
+            }
+        }
+
         const validMoves = [];
         const testBoard = passedBoard.flat();
-
-/*        if (depth !== 0) {
-            passedBoard.getWinState
-        } */
+        let boardToPass = passedBoard;
 
         for (let i=0; i < testBoard.length; i++) {
             if (testBoard[i] === 0) {
@@ -120,7 +129,49 @@ const gameBoard = (() => {
             }
         }
 
-        return validMoves[Math.floor(Math.random() * validMoves.length)];
+//      TEST FOR UNDEFINED (can remove)
+
+        if (depth === undefined) {
+            console.log("depth is undefined");
+        }
+
+        if (depth >= DEPTH_LIMIT) {
+            return depth - 50;
+        }
+
+        [...validMoves].forEach((moveIndex) => {
+            boardToPass = passedBoard;
+            boardToPass[Math.floor(moveIndex / 3)][moveIndex % 3] = (isAITurn) ? "O" : "X";
+            testBoard[moveIndex] = _minimax(boardToPass, !isAITurn, depth + 1);
+        });
+
+        if (isAITurn) {
+            let largestSoFar = 0;
+            let indexOfLargest = 0;
+
+            for (let k=0; k < testBoard.length; k++) {
+                if (largestSoFar < testBoard[k]) {
+                    largestSoFar = testBoard[k];
+                    indexOfLargest = k;
+                }
+            }
+
+            return indexOfLargest;
+        }
+
+        if (!isAITurn) {
+            let smallestSoFar = 0;
+            let indexOfSmallest = 0;
+
+            for (let a=0; a < testBoard.length; a++) {
+                if (smallestSoFar > testBoard[a]) {
+                    smallestSoFar = testBoard[a];
+                    indexOfSmallest = a;
+                }
+            }
+            
+            return indexOfSmallest;
+        }
     }
 
     return {updateBoard, updateScore, placePiece, resetBoard, getWinState,
@@ -141,7 +192,7 @@ const t3Game = (() => {
     const _dialogP1 = document.getElementById("p1");
     const _dialogP2 = document.getElementById("p2");
     const _dialogConfirmBtn = document.getElementById("confirm-btn");
-    let _currentPlayerTurn = 0;
+    let _currentPlayerTurn = "X";
     let _gameIsActive = false;
     let _aiGame = true;
 
@@ -205,7 +256,7 @@ const t3Game = (() => {
         _devina.name = _dialogP2.value;
         _devina.gamePiece = "O";
         _gameIsActive = true;
-        _currentPlayerTurn = 1;
+        _currentPlayerTurn = "X";
         gameBoard.resetBoard();
         gameBoard.updateBoard(_nemina.gamePiece, _devina.gamePiece);
         gameBoard.indicateTurn(_currentPlayerTurn);
@@ -225,6 +276,7 @@ const t3Game = (() => {
         }
         else {
             console.log("ERROR, square is already full");
+            console.log(gameBoard.currentBoard);
             return;
         }
 
@@ -235,14 +287,14 @@ const t3Game = (() => {
             case 0:
                 console.log("game is not finished, keep going");
                 break;
-            case 1:
+            case "X":
                 console.log("player 1 is the winner");
                 _nemina.score++;
                 _gameIsActive = false;
                 gameBoard.indicateTurn(0);
                 gameBoard.updateScore(_nemina.name, _nemina.score, _devina.name, _devina.score);
                 return;
-            case 2:
+            case "O":
                 console.log("player 2 is the winner");
                 _devina.score++;
                 _gameIsActive = false;
@@ -257,11 +309,11 @@ const t3Game = (() => {
         }
         // else change currentPlayerTurn and change player name containers class
 
-        _currentPlayerTurn = (_currentPlayerTurn === 1) ? 2 : 1;
+        _currentPlayerTurn = (_currentPlayerTurn === "X") ? "O" : "X";
         gameBoard.indicateTurn(_currentPlayerTurn);
 
-        if (_currentPlayerTurn === 2 && _aiGame) {
-            let nextMove = gameBoard.bestNextMove(gameBoard.currentBoard, true);
+        if (_currentPlayerTurn === "O" && _aiGame) {
+            let nextMove = gameBoard.bestNextMove(gameBoard.currentBoard);
             tryMove(nextMove.row, nextMove.column);
         }
     }
