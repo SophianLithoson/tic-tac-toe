@@ -149,7 +149,7 @@ const gameBoard = (() => {
         });
 
         if (isAITurn) {
-            let largestSoFar = 0;
+            let largestSoFar = -100;
 
             for (let k=0; k < squareScores.length; k++) {
                 if (squareScores[k] === undefined) {
@@ -161,6 +161,7 @@ const gameBoard = (() => {
             }
 
             if (depth === 0) {
+                console.log(`scoreboard shows: ${squareScores}`);
                 return squareScores.indexOf(largestSoFar);
             }
             
@@ -168,7 +169,7 @@ const gameBoard = (() => {
         }
 
         if (!isAITurn) {
-            let smallestSoFar = 0;
+            let smallestSoFar = 100;
 
             for (let a=0; a < squareScores.length; a++) {
                 if (squareScores[a] === undefined) {
