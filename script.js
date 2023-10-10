@@ -1,4 +1,4 @@
-const DEPTH_LIMIT = 10;
+let depth_limit = 10;
 const gameSquares = document.querySelectorAll(".game-square");
 
 const gameBoard = (() => {
@@ -130,13 +130,7 @@ const gameBoard = (() => {
             }
         }
 
-//      TEST FOR UNDEFINED (can remove)
-
-        if (depth === undefined) {
-            console.log("depth is undefined");
-        }
-
-        if (depth >= DEPTH_LIMIT) {
+        if (depth >= depth_limit) {
             return depth - 50;
         }
 
@@ -161,7 +155,6 @@ const gameBoard = (() => {
             }
 
             if (depth === 0) {
-                console.log(`scoreboard shows: ${_squareScores}`);
                 return _squareScores.indexOf(_largestSoFar);
             }
             
@@ -205,10 +198,11 @@ const t3Game = (() => {
     const _newGameDialog = document.getElementById("new-game-dialog");
     const _dialogP1 = document.getElementById("p1");
     const _dialogP2 = document.getElementById("p2");
+    const _dialogAILevel = document.getElementById("ai-level");
     const _dialogConfirmBtn = document.getElementById("confirm-btn");
     let _currentPlayerTurn = "X";
     let _gameIsActive = false;
-    let _aiGame = true;
+    let _aiGame = false;
 
     // set click listeners
 
@@ -256,7 +250,7 @@ const t3Game = (() => {
             _dialogP2.value = "";
             _newGameDialog.showModal();
         }
-        
+
         else {
             initializeGame();
         }
@@ -275,8 +269,14 @@ const t3Game = (() => {
         _nemina.gamePiece = "X";
         _devina.name = _dialogP2.value;
         _devina.gamePiece = "O";
-        _gameIsActive = true;
         _currentPlayerTurn = "X";
+
+        if (_dialogAILevel.options[_dialogAILevel.selectedIndex].value !== "none") {
+            depth_limit = _dialogAILevel.options[_dialogAILevel.selectedIndex].value;
+            _aiGame = true;
+        }
+
+        _gameIsActive = true;
         gameBoard.resetBoard();
         gameBoard.updateBoard(_nemina.gamePiece, _devina.gamePiece);
         gameBoard.indicateTurn(_currentPlayerTurn);
@@ -286,9 +286,6 @@ const t3Game = (() => {
 
     
     const tryMove = (positionRow, positionColumn) => {
-        console.log(`received positionRow: ${positionRow} and positionColumn: ${positionColumn}`);
-        console.log(gameBoard.currentBoard[positionRow][positionColumn]);
-
         // is spot full? yes: console log error no: place gamePiece and update board
         if (gameBoard.currentBoard[positionRow][positionColumn] === 0) {
             gameBoard.placePiece(_currentPlayerTurn, positionRow, positionColumn);
@@ -296,7 +293,6 @@ const t3Game = (() => {
         }
         else {
             console.log("ERROR, square is already full");
-            console.log(gameBoard.currentBoard);
             return;
         }
 
@@ -305,7 +301,6 @@ const t3Game = (() => {
         // if a tie, display tie message
         switch (gameBoard.getWinState(gameBoard.currentBoard)) {
             case 0:
-                console.log("game is not finished, keep going");
                 break;
             case "X":
                 console.log("player 1 is the winner");

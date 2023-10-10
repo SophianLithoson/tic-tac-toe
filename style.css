@@ -14,6 +14,10 @@ body {
     gap: 20px;
 }
 
+dialog label {
+    font-size: 18px;
+}
+
 .page-title {
     font-size: 1.5em;
     font-weight: bold;
