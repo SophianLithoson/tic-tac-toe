@@ -24,11 +24,11 @@ const gameBoard = (() => {
 
     const updateBoard = (p1Piece, p2Piece) => {
         let _i = 0;
-        let currentPiece = 0;
+        let _currentPiece = 0;
 
         [...gameSquares].forEach((square) => {
-            currentPiece = currentBoard[Math.floor(_i / 3)][_i % 3];
-            square.textContent = currentPiece==="X" ? p1Piece : currentPiece==="O" ? p2Piece : "";
+            _currentPiece = currentBoard[Math.floor(_i / 3)][_i % 3];
+            square.textContent = _currentPiece==="X" ? p1Piece : _currentPiece==="O" ? p2Piece : "";
             _i++;
         });
     };
@@ -119,14 +119,14 @@ const gameBoard = (() => {
             }
         }
 
-        const validMoves = [];
-        const squareScores = [];
-        const testBoard = passedBoard.flat();
+        const _validMoves = [];
+        const _squareScores = [];
+        const _testBoard = passedBoard.flat();
         let boardToPass = [[0, 0, 0],[0, 0, 0],[0, 0, 0]];
 
-        for (let i=0; i < testBoard.length; i++) {
-            if (testBoard[i] === 0) {
-                validMoves.push(i);
+        for (let i=0; i < _testBoard.length; i++) {
+            if (_testBoard[i] === 0) {
+                _validMoves.push(i);
             }
         }
 
@@ -140,51 +140,51 @@ const gameBoard = (() => {
             return depth - 50;
         }
 
-        [...validMoves].forEach((moveIndex) => {
+        [..._validMoves].forEach((moveIndex) => {
             boardToPass[0] = passedBoard[0].slice(0);
             boardToPass[1] = passedBoard[1].slice(0);
             boardToPass[2] = passedBoard[2].slice(0);
             boardToPass[Math.floor(moveIndex / 3)][moveIndex % 3] = (isAITurn) ? "O" : "X";
-            squareScores[moveIndex] = _minimax(boardToPass, !isAITurn, depth + 1);
+            _squareScores[moveIndex] = _minimax(boardToPass, !isAITurn, depth + 1);
         });
 
         if (isAITurn) {
-            let largestSoFar = -100;
+            let _largestSoFar = -100;
 
-            for (let k=0; k < squareScores.length; k++) {
-                if (squareScores[k] === undefined) {
+            for (let k=0; k < _squareScores.length; k++) {
+                if (_squareScores[k] === undefined) {
                     continue;
                 }
-                if (largestSoFar < squareScores[k]) {
-                    largestSoFar = squareScores[k];
+                if (_largestSoFar < _squareScores[k]) {
+                    _largestSoFar = _squareScores[k];
                 }
             }
 
             if (depth === 0) {
-                console.log(`scoreboard shows: ${squareScores}`);
-                return squareScores.indexOf(largestSoFar);
+                console.log(`scoreboard shows: ${_squareScores}`);
+                return _squareScores.indexOf(_largestSoFar);
             }
             
-            return largestSoFar;
+            return _largestSoFar;
         }
 
         if (!isAITurn) {
-            let smallestSoFar = 100;
+            let _smallestSoFar = 100;
 
-            for (let a=0; a < squareScores.length; a++) {
-                if (squareScores[a] === undefined) {
+            for (let a=0; a < _squareScores.length; a++) {
+                if (_squareScores[a] === undefined) {
                     continue;
                 }
-                if (smallestSoFar > squareScores[a]) {
-                    smallestSoFar = squareScores[a];
+                if (_smallestSoFar > _squareScores[a]) {
+                    _smallestSoFar = _squareScores[a];
                 }
             }
 
             if (depth === 0) {
-                return squareScores.indexOf(smallestSoFar);
+                return _squareScores.indexOf(_smallestSoFar);
             }
             
-            return smallestSoFar;
+            return _smallestSoFar;
         }
     }
 
@@ -251,9 +251,15 @@ const t3Game = (() => {
     });
 
     _newGameButton.addEventListener("click", () => {
-        _dialogP1.value = "";
-        _dialogP2.value = "";
-        _newGameDialog.showModal();
+        if (_nemina.name === "" && _devina.name === "") {
+            _dialogP1.value = "";
+            _dialogP2.value = "";
+            _newGameDialog.showModal();
+        }
+        
+        else {
+            initializeGame();
+        }
     });
 
     _dialogConfirmBtn.addEventListener("click", (event) => {
