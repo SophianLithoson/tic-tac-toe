@@ -120,8 +120,9 @@ const gameBoard = (() => {
         }
 
         const validMoves = [];
+        const squareScores = [];
         const testBoard = passedBoard.flat();
-        let boardToPass = [[0, 0, 0][0, 0, 0][0, 0, 0]];
+        let boardToPass = [[0, 0, 0],[0, 0, 0],[0, 0, 0]];
 
         for (let i=0; i < testBoard.length; i++) {
             if (testBoard[i] === 0) {
@@ -144,35 +145,45 @@ const gameBoard = (() => {
             boardToPass[1] = passedBoard[1].slice(0);
             boardToPass[2] = passedBoard[2].slice(0);
             boardToPass[Math.floor(moveIndex / 3)][moveIndex % 3] = (isAITurn) ? "O" : "X";
-            testBoard[moveIndex] = _minimax(boardToPass, !isAITurn, depth + 1);
+            squareScores[moveIndex] = _minimax(boardToPass, !isAITurn, depth + 1);
         });
 
         if (isAITurn) {
             let largestSoFar = 0;
-            let indexOfLargest = 0;
 
-            for (let k=0; k < testBoard.length; k++) {
-                if (largestSoFar < testBoard[k]) {
-                    largestSoFar = testBoard[k];
-                    indexOfLargest = k;
+            for (let k=0; k < squareScores.length; k++) {
+                if (squareScores[k] === undefined) {
+                    continue;
+                }
+                if (largestSoFar < squareScores[k]) {
+                    largestSoFar = squareScores[k];
                 }
             }
 
-            return indexOfLargest;
+            if (depth === 0) {
+                return squareScores.indexOf(largestSoFar);
+            }
+            
+            return largestSoFar;
         }
 
         if (!isAITurn) {
             let smallestSoFar = 0;
-            let indexOfSmallest = 0;
 
-            for (let a=0; a < testBoard.length; a++) {
-                if (smallestSoFar > testBoard[a]) {
-                    smallestSoFar = testBoard[a];
-                    indexOfSmallest = a;
+            for (let a=0; a < squareScores.length; a++) {
+                if (squareScores[a] === undefined) {
+                    continue;
+                }
+                if (smallestSoFar > squareScores[a]) {
+                    smallestSoFar = squareScores[a];
                 }
             }
+
+            if (depth === 0) {
+                return squareScores.indexOf(smallestSoFar);
+            }
             
-            return indexOfSmallest;
+            return smallestSoFar;
         }
     }
 
