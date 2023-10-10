@@ -33,9 +33,9 @@ dialog label {
     margin: 0 auto;
     display: grid;
     grid-template: 75px 75px 75px / 75px 75px 75px;
-    border: 3px solid black;
+    border: 3px solid rgb(37, 7, 7);
     border-radius: 3px;
-    background-color: black;
+    background-color: rgb(37, 7, 7);
     gap: 3px;
 }
 
